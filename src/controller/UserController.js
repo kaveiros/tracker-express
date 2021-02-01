@@ -4,6 +4,7 @@ const Role = db.Role
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
 const secretKey = require('../cfg/configJWT')
+const HttpError = require('../error/Http-Error')
 
 module.exports.create = async (req, res, next) => {
 
@@ -15,7 +16,7 @@ module.exports.create = async (req, res, next) => {
         roleDoc = await Role.findOne({ name: role })
 
     } catch (error) {
-        return next(error)
+        return next(new HttpError('Failed finding role', 500))
     }
 
     const createdUser = new User({
@@ -54,12 +55,39 @@ module.exports.create = async (req, res, next) => {
 
 module.exports.singIn = async (req, res, next) => {
 
-    let username = req.body.username
-    let password = req.body.password
-    let token
-    if (username === password) {
+    try {
 
+            //throw new HttpError('Failed signing in',500)
+            let username = req.body.username
+            let password = req.body.password
+            let user = await User.findOne({username:username})
+            await user.populate('roles').execPopulate();
+            let passwordMatch = await bcrypt.compare(password, user.password)
+            console.log(passwordMatch)
+            if (passwordMatch === true){
+                let token = jwt.sign(
+                    { userId: user.id, email: user.email},
+                    secretKey.secret,
+                    { expiresIn: '1h' }
+                );
+                let userData = {
+                    userId: user._id,
+                    username: user.username,
+                    email:user.email,
+                    role: user.roles[0].name
+                }
+                return res.status(200).send({user:userData, token: token})
+
+            }
+            else{
+                return res.status(422).send({message:"Could not signin user"})
+            }
+        
+    } catch (error) {
+        console.log(error)
+        return next(new HttpError('Failed signing in',500))
     }
+
 
 
 

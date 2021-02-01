@@ -5,5 +5,7 @@ module.exports = app => {
 
     route.post('/create', userController.create)
 
+    route.post('/signin', userController.singIn)
+
     app.use('/user', route)
 }
