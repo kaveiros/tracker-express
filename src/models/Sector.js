@@ -1,15 +1,12 @@
-const { mongoose } = require("../DbPool/ConnectionPool");
-
 /**
  * Create a Sector Model
  * @param {*} mongoose 
  */
-module.exports = mongoose => {
+module.exports = (mongoose) => {
 
-    var schema = mongoose.Schema({
+    let schema = new mongoose.Schema({
         sector: String
     }, {timestamps:true})
 
-    const Sector = mongoose.model("Sector", schema)
-    return Sector
+    return mongoose.model("Sector", schema)
 }
