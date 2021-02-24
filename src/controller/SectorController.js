@@ -28,13 +28,16 @@ module.exports.create = async (req, res) => {
 }
 
 
-module.exports.delete = async (req, res) =>{
+module.exports.delete = async (req, res) => {
     let id = req.body.id
-    Sector.findByIdAndDelete(id, (err)=>{
+    Sector.findByIdAndDelete(id, (err)=> {
         if(err) {
             return res.status(500).send({message:"Error deleting Sector."})
         }
         return res.status(200).send({message: "Deleted Sector."})
     })
+}
+
+module.exports.getAll = async  (req, res) => {
 
 }

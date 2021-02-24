@@ -6,7 +6,8 @@ const db = require('./src/mongo/dbPool')
 const app = express()
 
 let corsOptions = {
-    origin: "http://localhost:3000"
+    //origin: "http://localhost:3000"
+    origin: "https://tracker-061281-app.web.app"
 }
 app.use(cors(corsOptions))
 // parse requests of content-type - application/json
