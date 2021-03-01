@@ -1,14 +1,14 @@
 const db = require('../mongo/dbPool')
 const Role = db.Role
 
-module.exports.create = (req, res) => {
+module.exports.create = async (req, res) => {
     
     Role.exists({'name': req.body.name}, (err, result) =>{
         if(err) {
             return res.status(500).send({message: err})
         }
 
-        if (result == true) {
+        if (result === true) {
             return res.status(200).send({message: "Role exists already."})
         }
         else {
@@ -27,7 +27,7 @@ module.exports.create = (req, res) => {
     })
 }
 
-module.exports.delete = (req, res) =>{
+module.exports.delete = async (req, res) =>{
     let id = req.body.id
     Role.findByIdAndDelete(id, (err)=>{
         if(err) {

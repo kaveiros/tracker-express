@@ -6,7 +6,7 @@ const db = require('./src/mongo/dbPool')
 const app = express()
 
 let corsOptions = {
-    origin: "http://localhost:3000"
+    origin: process.env.CORS || "http://localhost:3000"
 }
 app.use(cors(corsOptions))
 // parse requests of content-type - application/json
@@ -21,6 +21,7 @@ app.get("/", (req, res) => {
 
 require('./src/router/RoleRouter')(app)
 require('./src/router/UserRouter')(app)
+require('./src/router/SectorRouter')(app)
 
 
 const port = process.env.PORT || 4000

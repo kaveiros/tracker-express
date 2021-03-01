@@ -35,7 +35,7 @@ module.exports.create = async (req, res, next) => {
     let token;
     try {
         token = jwt.sign(
-            { userId: createdUser.id, email: createdUser.email},
+            { user:createdUser},
             secretKey.secret,
             { expiresIn: '1h' }
         );
@@ -65,18 +65,18 @@ module.exports.singIn = async (req, res, next) => {
             let passwordMatch = await bcrypt.compare(password, user.password)
             console.log(passwordMatch)
             if (passwordMatch === true){
-                let token = jwt.sign(
-                    { userId: user.id, email: user.email},
-                    secretKey.secret,
-                    { expiresIn: '1h' }
-                );
                 let userData = {
                     userId: user._id,
                     username: user.username,
                     email:user.email,
                     role: user.roles[0].name
                 }
-                return res.status(200).send({user:userData, token: token})
+                let token = jwt.sign(
+                    userData,
+                    secretKey.secret,
+                    { expiresIn: '1h' }
+                );
+                return res.status(200).send({token: token})
 
             }
             else{
