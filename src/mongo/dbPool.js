@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const User = require('../models/User')(mongoose)
 const Role = require('../models/Role')(mongoose)
 const Sector = require('../models/Sector')(mongoose)
+const Employee = require('../models/Employee')(mongoose)
 
 const db = {}
 db.mongoose = mongoose
@@ -10,6 +11,7 @@ db.url = configDB.dbUrl
 db.Role = Role
 db.User = User
 db.Sector = Sector
+db.Employee = Employee
 db.mongoose.connect(db.url, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
     console.log("Connected to database")

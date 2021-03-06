@@ -22,6 +22,7 @@ app.get("/", (req, res) => {
 require('./src/router/RoleRouter')(app)
 require('./src/router/UserRouter')(app)
 require('./src/router/SectorRouter')(app)
+require('./src/router/EmployeeRouter')(app)
 
 
 const port = process.env.PORT || 4000
