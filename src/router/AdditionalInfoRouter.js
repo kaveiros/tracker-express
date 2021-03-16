@@ -18,5 +18,7 @@ module.exports = app => {
 
     router.post('/create', upload, additionalInfoRouter.upload)
 
+    router.post('/download-file', upload, additionalInfoRouter.downloadFile)
+
     app.use('/additionalInfo', router)
 }

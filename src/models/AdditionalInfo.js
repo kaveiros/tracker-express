@@ -1,6 +1,7 @@
 module.exports = (mongoose) => {
 
     let additionalInfo = new mongoose.Schema({
+        uniqueVersion:String,
         fromSector:String,
         toSector:String,
         description:String,

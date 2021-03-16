@@ -11,7 +11,8 @@ module.exports = (mongoose) => {
         expertise: {type: String, required: true},
         costOvertime: {type: Number, required: true},
         costPerDay: {type: Number, required: true},
-        //additionalInfo: [{type: mongoose.Schema.Types.ObjectId, ref: "AdditionalInfo"}]
+        uniqueVersion:{type:String, required:true},
+        additionalInfo: [{type: mongoose.Schema.Types.ObjectId, ref: "AdditionalInfo"}]
 
     })
     return mongoose.model("Employee", employeeSchema)

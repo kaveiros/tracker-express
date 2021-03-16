@@ -7,5 +7,7 @@ module.exports = app => {
 
     router.post("/delete", sectorController.delete)
 
+    router.get("/all", sectorController.getAll)
+
     app.use('/sector', router)
 }

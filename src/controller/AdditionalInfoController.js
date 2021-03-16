@@ -2,14 +2,13 @@ const {Storage} = require('@google-cloud/storage')
 const db = require('../mongo/dbPool')
 const AdditionalInfo = db.AdditionalInfo
 const File = db.File
-
+const bucketName = "tracker_app_storage"
 const path = require('path')
+const keyFileName = path.join(__dirname,'../cfg/tracker.json')
 
 module.exports.upload = async (req, res) => {
 
     let filesArray = []
-    const keyFileName = path.join(__dirname,'../cfg/tracker.json')
-    const bucketName = "tracker_app_storage"
     const googleStorage = new Storage({keyFilename: keyFileName});
     let documents = req.files
     try {
@@ -31,6 +30,7 @@ module.exports.upload = async (req, res) => {
     }
 
         let additionalInfo = new AdditionalInfo({
+            uniqueVersion: req.body.uniqueVersion,
             fromSector: req.body.fromSector,
             toSector: req.body.toSector,
             description: req.body.description,
@@ -42,7 +42,31 @@ module.exports.upload = async (req, res) => {
         console.log(err)
     }
 
-
-
     return res.status(201).send("done")
+}
+
+module.exports.downloadFile = async (req, res) => {
+
+    const {filename} = req.body
+    const googleStorage = new Storage({keyFilename: keyFileName});
+    const options = {
+        version: 'v4',
+        action: 'read',
+        expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+    };
+
+    try {
+        // Get a v4 signed URL for reading the file
+        const [url] = await googleStorage
+            .bucket(bucketName)
+            .file(filename)
+            .getSignedUrl(options);
+
+        return res.status(200).send(url)
+    }
+    catch (err) {
+        return res.status(500).send("Σφάλμα κατά το κατέβασμα αρχείου.")
+    }
+
+
 }

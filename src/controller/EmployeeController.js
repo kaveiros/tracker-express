@@ -1,7 +1,11 @@
 const db = require('../mongo/dbPool')
 const Employee = db.Employee
+const AdditionalInfo = db.AdditionalInfo
 
 module.exports.create = async (req, res) => {
+
+    let uniqueVersion = req.body.uniqueVersion
+    const infos = await AdditionalInfo.find({'uniqueVersion':uniqueVersion})
 
     let employee = new Employee({
         aa: req.body.aa,
@@ -15,6 +19,8 @@ module.exports.create = async (req, res) => {
         expertise: req.body.expertise,
         costOvertime: req.body.costOvertime,
         costPerDay: req.body.costPerDay,
+        uniqueVersion:uniqueVersion,
+        additionalInfo:infos
 
     })
 
