@@ -30,3 +30,48 @@ module.exports.create = async (req, res) => {
         return res.status(500).send(err)
     })
 }
+
+module.exports.search = async (req, res) => {
+
+    let page = req.params.page
+    await getEmployees(page, req, res)
+}
+
+
+async function getEmployees (page, req, res) {
+    let perPage = 20
+    if (page === 0){
+        page = 1
+    }
+    let dropDownValue = req.body.dropDownValue
+    let searchTerm = req.body.searchTerm
+    let queryObject = {}
+    //search for name
+    if (dropDownValue === "name") {
+        queryObject = {name: {$regex:searchTerm}}
+    }
+    //search for section
+    else if (dropDownValue === "section"){
+        queryObject = {section:Number(searchTerm)}
+    }
+    //search for sector
+    else if (dropDownValue === "sector"){
+        queryObject = {sector:Number(searchTerm)}
+    }
+    try {
+
+        const count = await Employee.countDocuments(queryObject)
+        const employees = await Employee
+            .find(queryObject)
+            .skip((perPage * page) - perPage).sort({ aa: 1 }).limit(perPage)
+        res.status(200).send(
+            {
+                pages: Math.ceil(count / perPage),
+                currentPage: page,
+                employees: employees
+            })
+    }
+    catch (error) {
+        res.status(500).send(error)
+    }
+}

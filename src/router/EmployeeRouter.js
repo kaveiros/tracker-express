@@ -5,6 +5,8 @@ module.exports = app => {
 
     router.post("/create", employeeController.create)
 
+    router.post("/search/:page*?", employeeController.search)
+
     //router.post("/delete", roleController.delete)
 
     app.use('/employee', router)
