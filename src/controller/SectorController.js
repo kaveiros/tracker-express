@@ -9,7 +9,7 @@ module.exports.create = async (req, res) => {
         }
 
         if (result === true) {
-            return res.status(200).send({message: "Sector exists already."})
+            return res.status(200).send({message: "Ο τομέας υπάρχει ήδη"})
         }
         else {
             let sectorData = new Sector({
@@ -20,7 +20,7 @@ module.exports.create = async (req, res) => {
                 return res.status(201).send(data)
 
             }).catch(err => {
-                return res.status(500).send(err)
+                return res.status(500).send({message: "Σφάλμα στην αποθήκευση του τομέα."})
             })
         }
 
@@ -32,12 +32,20 @@ module.exports.delete = async (req, res) => {
     let id = req.body.id
     Sector.findByIdAndDelete(id, (err)=> {
         if(err) {
-            return res.status(500).send({message:"Error deleting Sector."})
+            return res.status(500).send({message:"Σφάλμα στη διαγραφή του τομέα."})
         }
-        return res.status(200).send({message: "Deleted Sector."})
+        return res.status(200).send({message: "Ο τομέας διαγράφηκε."})
     })
 }
 
 module.exports.getAll = async  (req, res) => {
+
+    try {
+        const sectors = await Sector.find()
+        return res.status(200).send(sectors)
+    }
+    catch (exp) {
+        return res.status(500).send({message:"Σφάλμα"})
+    }
 
 }

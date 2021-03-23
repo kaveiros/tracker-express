@@ -76,7 +76,7 @@ module.exports.singIn = async (req, res, next) => {
                     secretKey.secret,
                     { expiresIn: '1h' }
                 );
-                return res.status(200).send({token: token})
+                return res.status(200).send({token:token})
 
             }
             else{
