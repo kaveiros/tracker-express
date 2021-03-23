@@ -20,5 +20,7 @@ module.exports = app => {
 
     router.post('/download-file', upload, additionalInfoRouter.downloadFile)
 
+    router.get('/all/:page*?', additionalInfoRouter.getAll)
+
     app.use('/additionalInfo', router)
 }

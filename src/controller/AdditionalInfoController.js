@@ -67,6 +67,25 @@ module.exports.downloadFile = async (req, res) => {
     catch (err) {
         return res.status(500).send("Σφάλμα κατά το κατέβασμα αρχείου.")
     }
+}
+
+module.exports.getAll= async (req, res) => {
+
+    try {
+        const perPage = 20
+        const page = req.params.page
+        const count = await AdditionalInfo.countDocuments()
+        const infos = await AdditionalInfo.find().populate('files').skip((perPage*page) - perPage)
+            .sort({'_id': -1}).limit(perPage)
+        res.send({
+            pages: Math.ceil(count/perPage),
+            currentPage: page,
+            infos:infos
+        })
+    }
+    catch(error) {
+        res.status(500).send({message: error})
+    }
 
 
 }
