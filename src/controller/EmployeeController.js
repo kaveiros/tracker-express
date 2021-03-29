@@ -1,6 +1,14 @@
 const db = require('../mongo/dbPool')
 const Employee = db.Employee
 const AdditionalInfo = db.AdditionalInfo
+const mongoose = db.mongoose
+const File = db.File
+const bucketName = "tracker_app_storage"
+const {Storage} = require('@google-cloud/storage')
+const path = require('path')
+const keyFileName = path.join(__dirname,'../cfg/tracker.json')
+
+
 
 module.exports.create = async (req, res) => {
 
@@ -74,4 +82,43 @@ async function getEmployees (page, req, res) {
     catch (error) {
         res.status(500).send(error)
     }
+}
+
+exports.delete = async (req, res) => {
+
+    const {_id, additionalInfo} = req.body
+    const googleStorage = new Storage({keyFilename: keyFileName});
+    const session = await mongoose.startSession()
+    try {
+        await session.startTransaction();
+
+        for (let infoId of additionalInfo){
+            const additionalInfo = await AdditionalInfo.findOne({_id:infoId}).populate('files').exec()
+            let additionalFiles = additionalInfo.files
+            console.log(additionalFiles)
+            if (additionalFiles.length !== 0){
+                for (let doc of additionalFiles) {
+                    let document = await File.findOne({_id:doc})
+                    await googleStorage.bucket(bucketName).file(document.name).delete()
+                    await File.findOneAndDelete({_id:doc}).exec()
+                }
+            }
+            await AdditionalInfo.findOneAndDelete({_id:infoId}).exec()
+        }
+        await Employee.findOneAndDelete({_id: _id}).exec()
+
+        await session.commitTransaction();
+        session.endSession();
+    }
+    catch (err) {
+
+        await session.abortTransaction()
+        session.endSession()
+        console.log(err)
+        return res.status(500).send({message: "Σφάλμα κατά τη διαγραφή του εργαζομένου"})
+    }
+
+    res.status(204).send()
+
+
 }
