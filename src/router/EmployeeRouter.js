@@ -7,7 +7,7 @@ module.exports = app => {
 
     router.post("/search/:page*?", employeeController.search)
 
-    //router.post("/delete", roleController.delete)
+    router.delete("/delete", employeeController.delete)
 
     app.use('/employee', router)
 
