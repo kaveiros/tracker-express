@@ -6,6 +6,7 @@ const Sector = require('../models/Sector')(mongoose)
 const Employee = require('../models/Employee')(mongoose)
 const AdditionalInfo = require('../models/AdditionalInfo')(mongoose)
 const File = require('../models/File')(mongoose)
+const Warehouse = require('../models/Warehouse')(mongoose)
 
 const db = {}
 db.mongoose = mongoose
@@ -16,6 +17,7 @@ db.Sector = Sector
 db.Employee = Employee
 db.AdditionalInfo = AdditionalInfo
 db.File = File
+db.Warehouse = Warehouse
 db.mongoose.connect(db.url, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
     console.log("Connected to database")
