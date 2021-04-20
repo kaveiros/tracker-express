@@ -32,7 +32,7 @@ module.exports.create = async (req, res) => {
     wareHouse.save().then(data => {
         return res.status(201).send(data)
     }).catch(err => {
-        return res.status(201).send(err)
+        return res.status(500).send(err)
     })
 }
 

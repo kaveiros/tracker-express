@@ -49,3 +49,56 @@ module.exports.getAll = async  (req, res) => {
     }
 
 }
+
+module.exports.search = async (req, res) => {
+    let page = req.params.page || 1
+    await getSectors(page, req, res)
+}
+
+module.exports.update = async (req, res) => {
+    const {_id, sector} = req.body
+
+    try {
+        let sectorObj = await Sector.findByIdAndUpdate({_id:_id})
+        sectorObj.sector = sector
+        sectorObj.save()
+        return res.status(201).json({message:"Ενημερώθηκε."})
+    }
+    catch (err) {
+        return res.status(500).json({message: "Σφάλμα κατά την ενημέρωση του τομέα."})
+    }
+}
+
+module.exports.delete = async (req, res) => {
+
+    const {_id} = req.body
+    try {
+        await Sector.findByIdAndDelete({_id:_id}).exec()
+        return res.status(202).send({message: "Ο τομέας διεγράφηκε."})
+    }
+    catch (exp) {
+        return res.status(500).send({message:"Σφάλμα κατά τη διαγραφή του τομέα."})
+    }
+}
+
+
+async function getSectors(page, req, res) {
+    let perPage = 20
+    try {
+        const count = await Sector.countDocuments({})
+        const sectors = await Sector
+            .find({})
+            .skip((perPage * page) - perPage)
+            .sort({createdAt:1})
+            .limit(perPage)
+        return res.status(200).send({
+            pages: Math.ceil(count/perPage),
+            currentPage: page,
+            sectors:sectors
+        })
+    }
+    catch (e) {
+        return res.status(500).send({message: "Σφάλμα κατά την αναζήτητηση των τομέων."})
+
+    }
+}
