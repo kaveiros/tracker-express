@@ -25,6 +25,7 @@ require('./src/router/SectorRouter')(app)
 require('./src/router/EmployeeRouter')(app)
 require('./src/router/AdditionalInfoRouter')(app)
 require('./src/router/WarehouseRouter')(app)
+require('./src/router/SectionRouter')(app)
 
 
 const port = process.env.PORT || 4000
