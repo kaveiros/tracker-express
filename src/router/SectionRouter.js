@@ -2,16 +2,18 @@ module.exports = app => {
 
     const sectionController = require('../controller/SectionController')
     const router = require('express').Router()
+    const authjwt = require('../midleware/AuthJWT')
 
-    router.post('/create', sectionController.create)
 
-    router.post('/search/:page*?', sectionController.search)
+    router.post('/create', [authjwt.verifyToken], sectionController.create)
 
-    router.get('/all', sectionController.getAll)
+    router.post('/search/:page*?', [authjwt.verifyToken], sectionController.search)
 
-    router.post('/update', sectionController.update)
+    router.get('/all', [authjwt.verifyToken], sectionController.getAll)
 
-    router.post('/delete', sectionController.delete)
+    router.post('/update', [authjwt.verifyToken], sectionController.update)
+
+    router.post('/delete', [authjwt.verifyToken], sectionController.delete)
 
     app.use('/section', router)
 }

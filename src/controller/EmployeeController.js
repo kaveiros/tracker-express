@@ -10,7 +10,7 @@ const keyFileName = path.join(__dirname,'../cfg/tracker.json')
 
 
 
-module.exports.create = async (req, res) => {
+module.exports.create = async (req, res, next) => {
 
     let uniqueVersion = req.body.uniqueVersion
     const infos = await AdditionalInfo.find({'uniqueVersion':uniqueVersion})
@@ -39,10 +39,9 @@ module.exports.create = async (req, res) => {
     })
 }
 
-module.exports.search = async (req, res) => {
-
+module.exports.search = async (req, res,next) => {
     let page = req.params.page
-    await getEmployees(page, req, res)
+    await getEmployees(page, req, res, next)
 }
 
 
@@ -80,7 +79,7 @@ async function getEmployees (page, req, res) {
             })
     }
     catch (error) {
-        res.status(500).send(error)
+        res.status(500).json({error:error})
     }
 }
 

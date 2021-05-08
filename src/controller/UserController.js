@@ -9,10 +9,10 @@ const HttpError = require('../error/Http-Error')
 module.exports.create = async (req, res, next) => {
 
     const { username, role , email, password } = req.body
-    let hashedPassoword
+    let hashedPassword
     let roleDoc
     try {
-        hashedPassoword = await bcrypt.hash(password, 12)
+        hashedPassword = await bcrypt.hash(password, 12)
         roleDoc = await Role.findOne({ name: role })
 
     } catch (error) {
@@ -21,7 +21,7 @@ module.exports.create = async (req, res, next) => {
 
     const createdUser = new User({
         username: username,
-        password: hashedPassoword,
+        password: hashedPassword,
         email: email,
         roles: roleDoc.id
 
@@ -60,23 +60,38 @@ module.exports.singIn = async (req, res, next) => {
             //throw new HttpError('Failed signing in',500)
             let username = req.body.username
             let password = req.body.password
-            let user = await User.findOne({username:username})
-            await user.populate('roles').execPopulate();
-            let passwordMatch = await bcrypt.compare(password, user.password)
+            let user = await User.findOne({username:username}).exec()
+        console.log(user)
+            let roles = await user.populate('roles').execPopulate();
+            let passwordMatch = bcrypt.compareSync(password, user.password)
             console.log(passwordMatch)
             if (passwordMatch === true){
-                let userData = {
+
+                let secureData = {
                     userId: user._id,
                     username: user.username,
                     email:user.email,
                     role: user.roles[0].name
                 }
+
+                let userData = {
+                    username: user.username,
+                    email:user.email,
+                    role: user.roles[0].name
+                }
+
                 let token = jwt.sign(
-                    userData,
+                    secureData,
                     secretKey.secret,
                     { expiresIn: '1h' }
                 );
-                return res.status(200).send({token:token})
+
+                let userToken = jwt.sign(userData,
+                    secretKey.secret,
+                    {expiresIn: '1h'})
+
+                res.cookie('token', token, {httpOnly:true})
+                return res.status(200).send({token:userToken})
 
             }
             else{
