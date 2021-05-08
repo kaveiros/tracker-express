@@ -2,16 +2,18 @@ module.exports = app => {
 
     const sectorController = require('../controller/SectorController')
     const router = require('express').Router()
+    const authjwt = require('../midleware/AuthJWT')
 
-    router.post("/create", sectorController.create)
 
-    router.post('/search/:page*?', sectorController.search)
+    router.post("/create", [authjwt.verifyToken], sectorController.create)
 
-    router.get("/all", sectorController.getAll)
+    router.post('/search/:page*?', [authjwt.verifyToken], sectorController.search)
 
-    router.post('/update', sectorController.update)
+    router.get("/all", [authjwt.verifyToken], sectorController.getAll)
 
-    router.delete('/delete', sectorController.delete)
+    router.post('/update', [authjwt.verifyToken], sectorController.update)
+
+    router.delete('/delete', [authjwt.verifyToken], sectorController.delete)
 
     app.use('/sector', router)
 }

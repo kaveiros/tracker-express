@@ -5,17 +5,21 @@ const User = db.User
 const Role = db.Role
 
 verifyToken = (req, res, next) => {
-    let token = req.headers['x-access-token']
 
-    if(!token) {
+    if(!req.cookies['token']) {
         return res.status(403).send({message:"Δεν υπάρχει τόκεν!"})
     }
 
-    jwt.verify(token, configJwt.secret, (err, decoded) =>{
+    jwt.verify(req.cookies['token'], configJwt.secret, (err, decoded) =>{
         if(err) {
             return res.status(401).send({message:"Χωρίς εξουσιοδότηση!"})
         }
-        req.userId = decoded.id
+        let userID = decoded.id
+        User.findById(userID).exec(err=>{
+            if (err) {
+                return res.status(401).send({message:"Χωρίς εξουσιοδότηση!"})
+            }
+        })
         next()
     })
 }
@@ -78,9 +82,7 @@ isModerator = (req, res, next) => {
 
 
 const authJWT = {
-    verifyToken,
-    isAdmin,
-    isModerator
+    verifyToken
 }
 
 module.exports = authJWT

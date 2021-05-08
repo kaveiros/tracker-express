@@ -1,18 +1,22 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser');
 const cors = require('cors')
 const db = require('./src/mongo/dbPool')
 
 const app = express()
 
 let corsOptions = {
-    origin: process.env.CORS || "http://localhost:3000"
+    origin: process.env.CORS || "http://localhost:3000",
+    credentials:true
 }
 app.use(cors(corsOptions))
 // parse requests of content-type - application/json
 app.use(bodyParser.json())
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cookieParser())
 
 // simple route
 app.get("/", (req, res) => {
