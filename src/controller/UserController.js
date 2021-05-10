@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
 const secretKey = require('../cfg/configJWT')
 const HttpError = require('../error/Http-Error')
+ const LOGGER = require('../loggers/WinstonLogger')
+
+
 
 module.exports.create = async (req, res, next) => {
 
@@ -95,6 +98,7 @@ module.exports.singIn = async (req, res, next) => {
 
             }
             else{
+                LOGGER.error("Could not signin user")
                 return res.status(422).send({message:"Could not signin user"})
             }
         
