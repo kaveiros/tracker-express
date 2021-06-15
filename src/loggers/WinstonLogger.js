@@ -5,7 +5,7 @@ require('winston-mongodb')
 const logger =  createLogger({
     transports: [new transports.Console({
         level: 'info',
-        format: format.combine(format.timestamp(), format.simple())
+        format: format.combine(format.timestamp(), format.simple(), format.colorize())
     }),
         new transports.MongoDB({
             level:'error',
