@@ -8,6 +8,7 @@ const AdditionalInfo = require('../models/AdditionalInfo')(mongoose)
 const File = require('../models/File')(mongoose)
 const Warehouse = require('../models/Warehouse')(mongoose)
 const Section = require('../models/Section')(mongoose)
+const OutgoingWork = require('../models/OutgoingWork')(mongoose)
 
 const db = {}
 db.mongoose = mongoose
@@ -20,6 +21,8 @@ db.AdditionalInfo = AdditionalInfo
 db.File = File
 db.Warehouse = Warehouse
 db.Section = Section
+db.OutgoingWork = OutgoingWork
+
 db.mongoose.connect(db.url, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
     console.log("Connected to database")

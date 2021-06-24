@@ -1,6 +1,6 @@
 module.exports = mongoose => {
 
-    var schema = mongoose.Schema({
+    let schema = mongoose.Schema({
         aa: Number,
         workCode:String,
         workDate: Date,
@@ -8,9 +8,16 @@ module.exports = mongoose => {
         contractor: String,
         jobCode:String,
         jobStartDate: Date,
-        jobEndDate: Date
+        jobEndDate: Date,
+        fromSector: [{type: mongoose.Schema.Types.ObjectId, ref: "Sector"}],
+        fromSectorLeader: String,
+        toSector: [{type: mongoose.Schema.Types.ObjectId, ref: "Sector"}],
+        toSectorLeader: String,
+        additionalInfo: [{type: mongoose.Schema.Types.ObjectId, ref: "AdditionalInfo"}]
+
+
     },{timestamps:true})
 
-    const OutWork = mongoose.model('Outwork', schema)
-    return OutWork
+     return mongoose.model('Outwork', schema)
+
 }
