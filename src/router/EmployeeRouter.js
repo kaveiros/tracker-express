@@ -11,6 +11,8 @@ module.exports = app => {
 
     router.delete("/delete", [authjwt.verifyToken],employeeController.delete)
 
+    router.get("/all",[authjwt.verifyToken], employeeController.getAll)
+
     app.use('/employee', router)
 
 }

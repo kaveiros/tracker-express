@@ -121,3 +121,14 @@ exports.delete = async (req, res) => {
 
 
 }
+
+module.exports.getAll = async(req, res) => {
+
+    try {
+        const employees = await Employee.find()
+        return res.status(200).send(employees);
+    }catch (e) {
+        return res.status(500).send({message: "Σφάλμα στην ανάπτυξη του προσωπικού."})
+    }
+    
+}
