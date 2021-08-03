@@ -111,3 +111,37 @@ module.exports.singIn = async (req, res, next) => {
 
 
 }
+
+
+module.exports.setRole = async (req, res) => {
+
+    try {
+
+        const {employeeId, roleId} = req.body
+        console.log(req.body)
+        const employee = await User.findOneAndUpdate(
+            { _id: employeeId },
+            { $push: { roles: roleId }},(err, result) =>{
+                if (err) {
+                    LOGGER.error("Σφάλμα στην προσθήκη ρόλου.")
+                    return res.status(500).send({message: "Σφάλμα στην προσθήκη ρόλου."})
+                }
+                else {
+                    return res.status(200).send({message:"Ο ρόλος προστέθηκε επιτυχώς."})
+                }
+            }
+        )
+
+    }
+    catch (exp) {
+        console.log(exp)
+        LOGGER.error("Σφάλμα στην προσθήκη ρόλου.")
+        return res.status(500).send({message: "Σφάλμα στην προσθήκη ρόλου."})
+    }
+
+    return res.status(200).send({message:"Ο ρόλος προστέθηκε επιτυχώς."})
+
+//push
+    //pull
+}
+
