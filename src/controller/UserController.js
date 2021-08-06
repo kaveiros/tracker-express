@@ -119,7 +119,7 @@ module.exports.setRole = async (req, res) => {
 
         const {employeeId, roleId} = req.body
         console.log(req.body)
-        const employee = await User.findOneAndUpdate(
+        const user = await User.findOneAndUpdate(
             { _id: employeeId },
             { $push: { roles: roleId }},(err, result) =>{
                 if (err) {
@@ -139,9 +139,21 @@ module.exports.setRole = async (req, res) => {
         return res.status(500).send({message: "Σφάλμα στην προσθήκη ρόλου."})
     }
 
-    return res.status(200).send({message:"Ο ρόλος προστέθηκε επιτυχώς."})
+    //return res.status(200).send({message:"Ο ρόλος προστέθηκε επιτυχώς."})
 
 //push
     //pull
+}
+
+module.exports.getAll = async (req, res) => {
+
+    try {
+        const users = await User.find()
+        return  res.status(200).send(users)
+    }
+    catch (exception) {
+        LOGGER.error({message: "Σφάλμα στην ανάκτηση χρηστών."})
+        return res.status(500).send({message: "Σφάλμα στην ανάκτηση χρηστών."})
+    }
 }
 
