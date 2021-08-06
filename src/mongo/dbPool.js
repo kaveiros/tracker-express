@@ -23,6 +23,7 @@ db.Warehouse = Warehouse
 db.Section = Section
 db.OutgoingWork = OutgoingWork
 
+db.mongoose.set('useFindAndModify', false);
 db.mongoose.connect(db.url, {useNewUrlParser:true, useUnifiedTopology:true})
 .then(()=>{
     console.log("Connected to database")
