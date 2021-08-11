@@ -9,6 +9,8 @@ module.exports = app => {
 
     router.post("/delete", [authjwt.verifyToken], roleController.delete)
 
+    router.post('/search/:page*?', [authjwt.verifyToken], roleController.search)
+
     router.get("/all", roleController.getAll)
 
     app.use('/role', router)

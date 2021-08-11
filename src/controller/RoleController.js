@@ -48,3 +48,30 @@ module.exports.delete = async (req, res) =>{
     })
 
 }
+
+module.exports.search = async (req, res) => {
+
+    let page = req.params.page || 1
+    await getRoles(page, req, res)
+}
+
+
+async function getRoles (page, req, res) {
+
+    let perPage = 20
+    try {
+        const totalRoles = await Role.countDocuments({})
+        const roles = await Role
+            .find({})
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+        return res.status(200).send({
+            pages: Math.ceil(totalRoles/perPage),
+            currentPage: page,
+            roles:roles
+        })
+    }
+    catch (err) {
+        return res.status(500).send({message: "Σφάλμα κατά την αναζήτηση των ρόλων."})
+    }
+}
