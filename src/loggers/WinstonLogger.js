@@ -8,6 +8,7 @@ const logger =  createLogger({
         format: format.combine(format.timestamp(), format.simple(), format.colorize())
     }),
         new transports.MongoDB({
+            tryReconnect: true,
             level:'error',
             db:cfg.dbUrl,
             options: { useUnifiedTopology: true }
