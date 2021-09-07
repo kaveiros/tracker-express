@@ -13,5 +13,7 @@ module.exports = app => {
 
     route.get("/all",[authjwt.verifyToken], userController.getAll)
 
+    route.post("/search",[authjwt.verifyToken], userController.search)
+
     app.use('/user', route)
 }
