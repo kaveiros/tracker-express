@@ -12,11 +12,14 @@ verifyToken = (req, res, next) => {
 
     jwt.verify(req.cookies['token'], configJwt.secret, (err, decoded) =>{
         if(err) {
+            console.log(err)
             return res.status(401).send({message:"Χωρίς εξουσιοδότηση!"})
         }
         let userID = decoded.id
+        console.log("Decoded -> ", decoded)
         User.findById(userID).exec(err=>{
             if (err) {
+                console.log(err)
                 return res.status(401).send({message:"Χωρίς εξουσιοδότηση!"})
             }
         })

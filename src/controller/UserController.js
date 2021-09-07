@@ -157,3 +157,17 @@ module.exports.getAll = async (req, res) => {
     }
 }
 
+
+module.exports.search = async(req, res) => {
+
+    const { username } =  req.body
+
+    try {
+        const user = await User.find({username: username})
+        return res.status(200).send(user)
+        
+    } catch (error) {
+        res.status(500).send({message: "Σφάλμα στην ανάκτηση χρήστη."})
+    }
+}
+
