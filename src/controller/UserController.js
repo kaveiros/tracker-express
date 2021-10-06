@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs');
 const secretKey = require('../cfg/configJWT')
 const HttpError = require('../error/Http-Error')
- const LOGGER = require('../loggers/WinstonLogger')
+const LOGGER = require('../loggers/WinstonLogger')
 
-
+const USER_LOGIN_ERROR = "Λάθος κωδικός ή όνομα χρήστη."
 
 module.exports.create = async (req, res, next) => {
 
@@ -60,48 +60,48 @@ module.exports.singIn = async (req, res, next) => {
 
     try {
 
-            //throw new HttpError('Failed signing in',500)
-            let username = req.body.username
-            let password = req.body.password
-            let user = await User.findOne({username:username}).exec()
+        //throw new HttpError('Failed signing in',500)
+        let username = req.body.username
+        let password = req.body.password
+        let user = await User.findOne({username:username}).exec()
         console.log(user)
-            let roles = await user.populate('roles').execPopulate();
-            let passwordMatch = bcrypt.compareSync(password, user.password)
-            console.log(passwordMatch)
-            if (passwordMatch === true){
+        let roles = await user.populate('roles').execPopulate();
+        let passwordMatch = bcrypt.compareSync(password, user.password)
+        console.log(passwordMatch)
+        if (passwordMatch === true){
 
-                let secureData = {
-                    userId: user._id,
-                    username: user.username,
-                    email:user.email,
-                    role: user.roles[0].name
-                }
-
-                let userData = {
-                    username: user.username,
-                    email:user.email,
-                    role: user.roles[0].name
-                }
-
-                let token = jwt.sign(
-                    secureData,
-                    secretKey.secret,
-                    { expiresIn: '1h' }
-                );
-
-                let userToken = jwt.sign(userData,
-                    secretKey.secret,
-                    {expiresIn: '1h'})
-
-                res.cookie('token', token, {httpOnly:true})
-                return res.status(200).send({token:userToken})
-
+            let secureData = {
+                userId: user._id,
+                username: user.username,
+                email:user.email,
+                role: user.roles[0].name
             }
-            else{
-                LOGGER.error("Could not signin user")
-                return res.status(422).send({message:"Could not signin user"})
+
+            let userData = {
+                username: user.username,
+                email:user.email,
+                role: user.roles[0].name
             }
-        
+
+            let token = jwt.sign(
+                secureData,
+                secretKey.secret,
+                { expiresIn: '1h' }
+            );
+
+            let userToken = jwt.sign(userData,
+                secretKey.secret,
+                {expiresIn: '1h'})
+
+            res.cookie('token', token, {httpOnly:true})
+            return res.status(200).send({token:userToken})
+
+        }
+        else{
+            LOGGER.error(USER_LOGIN_ERROR)
+            return res.status(422).json(USER_LOGIN_ERROR)
+        }
+
     } catch (error) {
         console.log(error)
         return next(new HttpError('Failed signing in',500))
@@ -148,7 +148,7 @@ module.exports.setRole = async (req, res) => {
 module.exports.getAll = async (req, res) => {
 
     try {
-        const users = await User.find()
+        const users = await User.find().populate('roles')
         return  res.status(200).send(users)
     }
     catch (exception) {
@@ -160,12 +160,27 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.search = async(req, res) => {
 
+    const perPage = 20
     const { username } =  req.body
+    let page = req.params.page
 
     try {
+
+        if (page !== undefined) {
+            const totalRoles = await User.countDocuments({})
+            const roles = await User
+                .find({})
+                .skip((perPage * page) - perPage)
+                .limit(perPage)
+            return res.status(200).send({
+                pages: Math.ceil(totalRoles/perPage),
+                currentPage: page,
+                roles:roles
+            })
+        }
         const user = await User.find({username: username})
         return res.status(200).send(user)
-        
+
     } catch (error) {
         res.status(500).send({message: "Σφάλμα στην ανάκτηση χρήστη."})
     }

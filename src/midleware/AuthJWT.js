@@ -9,6 +9,7 @@ verifyToken = (req, res, next) => {
     if(!req.cookies['token']) {
         return res.status(403).send({message:"Δεν υπάρχει τόκεν!"})
     }
+    if (jwt.TokenExpiredError)
 
     jwt.verify(req.cookies['token'], configJwt.secret, (err, decoded) =>{
         if(err) {
