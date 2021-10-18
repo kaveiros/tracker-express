@@ -6,8 +6,10 @@ const bcrypt = require('bcryptjs');
 const secretKey = require('../cfg/configJWT')
 const HttpError = require('../error/Http-Error')
 const LOGGER = require('../loggers/WinstonLogger')
+const createError = require('http-errors')
 
 const USER_LOGIN_ERROR = "Λάθος κωδικός ή όνομα χρήστη."
+const USER_EXCEPTION = "Σφάλμα στην σύνδεση. Προσπαθήστε ξανά."
 
 module.exports.create = async (req, res, next) => {
 
@@ -64,10 +66,10 @@ module.exports.singIn = async (req, res, next) => {
         let username = req.body.username
         let password = req.body.password
         let user = await User.findOne({username:username}).exec()
-        console.log(user)
+        console.log("User -> ",user)
         let roles = await user.populate('roles').execPopulate();
         let passwordMatch = bcrypt.compareSync(password, user.password)
-        console.log(passwordMatch)
+        console.log("Passwords match -> ", passwordMatch)
         if (passwordMatch === true){
 
             let secureData = {
@@ -98,13 +100,15 @@ module.exports.singIn = async (req, res, next) => {
 
         }
         else{
-            LOGGER.error(USER_LOGIN_ERROR)
-            return res.status(422).json(USER_LOGIN_ERROR)
+            //LOGGER.error(USER_LOGIN_ERROR)
+            //return next(createError(281, USER_LOGIN_ERROR))
+            return res.status(401).send(USER_LOGIN_ERROR)
         }
 
     } catch (error) {
         console.log(error)
-        return next(new HttpError('Failed signing in',500))
+        return res.status(500).send(USER_EXCEPTION)
+        //return next(createError(500, USER_EXCEPTION, {expose: true}))
     }
 
 

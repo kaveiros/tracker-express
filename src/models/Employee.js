@@ -1,4 +1,5 @@
 module.exports = (mongoose) => {
+    const opts = {toJSON: { virtuals: true} };
     const employeeSchema = new mongoose.Schema({
         aa: {type: Number, required: true},
         code: {type: String, required: true},
@@ -14,6 +15,6 @@ module.exports = (mongoose) => {
         uniqueVersion:{type:String, required:true},
         additionalInfo: [{type: mongoose.Schema.Types.ObjectId, ref: "AdditionalInfo"}]
 
-    })
+    }, opts)
     return mongoose.model("Employee", employeeSchema)
 }
