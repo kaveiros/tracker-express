@@ -7,7 +7,7 @@ const db = require('./src/mongo/dbPool')
 const app = express()
 
 let corsOptions = {
-    origin: process.env.CORS || "http://localhost:3000",
+    origin: [process.env.CORS2, process.env.CORS || "http://localhost:3000"],
     credentials:true
 }
 app.use(cors(corsOptions))
