@@ -8,7 +8,6 @@ module.exports = (mongoose) => {
         section: {type: String, required: true},
         sector: {type: String, required: true},
         property: {type: String, required: true},
-        specialisedIn: {type: String, required: true},
         expertise: {type: String, required: true},
         costOvertime: {type: Number, required: true},
         costPerDay: {type: Number, required: true},
