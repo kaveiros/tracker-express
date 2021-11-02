@@ -9,7 +9,6 @@ verifyToken = (req, res, next) => {
     if(!req.headers['authorization']) {
         return res.status(403).send({message:"Δεν υπάρχει τόκεν!"})
     }
-    if (jwt.TokenExpiredError)
 
     jwt.verify(req.headers['authorization'].split(' ')[1], configJwt.secret, (err, decoded) =>{
         if(err) {
