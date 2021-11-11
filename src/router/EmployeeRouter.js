@@ -9,7 +9,7 @@ module.exports = app => {
 
     router.post("/search/:page*?", [authjwt.verifyToken], employeeController.search)
 
-    router.delete("/delete", [authjwt.verifyToken],employeeController.delete)
+    router.delete("/delete/:employeeId", [authjwt.verifyToken], employeeController.delete)
 
     router.get("/all",[authjwt.verifyToken], employeeController.getAll)
 

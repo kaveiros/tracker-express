@@ -85,24 +85,35 @@ async function getEmployees (page, req, res) {
 
 exports.delete = async (req, res) => {
 
+    console.log(req.params);
+    const {employeeId} = req.params
+    const employee = await Employee
+    .find({_id: employeeId}).populate('additionalInfo')
+    if (employee.additionalInfo) {
+        console.log(employee.additionalInfo)
+    }
+
     const {_id, additionalInfo} = req.body
     const googleStorage = new Storage({keyFilename: keyFileName});
-    const session = await mongoose.startSession()
     try {
-        await session.startTransaction();
+        const session = await mongoose.startSession()
+        session.startTransaction();
 
-        for (let infoId of additionalInfo){
-            const additionalInfo = await AdditionalInfo.findOne({_id:infoId}).populate('files').exec()
-            let additionalFiles = additionalInfo.files
-            console.log(additionalFiles)
-            if (additionalFiles.length !== 0){
-                for (let doc of additionalFiles) {
-                    let document = await File.findOne({_id:doc})
-                    await googleStorage.bucket(bucketName).file(document.name).delete()
-                    await File.findOneAndDelete({_id:doc}).exec()
+        if (additionalInfo != undefined && additionalInfo.length > 0) {
+            for (let infoId of additionalInfo){
+                const additionalInfo = await AdditionalInfo.findOne({_id:infoId}).populate('files').exec()
+                let additionalFiles = additionalInfo.files
+                console.log(additionalFiles)
+                if (additionalFiles.length !== 0){
+                    for (let doc of additionalFiles) {
+                        let document = await File.findOne({_id:doc})
+                        await googleStorage.bucket(bucketName).file(document.name).delete()
+                        await File.findOneAndDelete({_id:doc}).exec()
+                    }
                 }
+                await AdditionalInfo.findOneAndDelete({_id:infoId}).exec()
             }
-            await AdditionalInfo.findOneAndDelete({_id:infoId}).exec()
+    
         }
         await Employee.findOneAndDelete({_id: _id}).exec()
 
