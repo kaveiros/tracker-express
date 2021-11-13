@@ -10,7 +10,8 @@ verifyToken = (req, res, next) => {
         return res.status(403).send({message:"Δεν υπάρχει τόκεν!"})
     }
 
-    jwt.verify(req.headers['authorization'].split(' ')[1], configJwt.secret, (err, decoded) =>{
+    let auth = req.headers['authorization'].split(' ')[1]
+    jwt.verify(auth, configJwt.secret, (err, decoded) =>{
         if(err) {
             console.log(err)
             return res.status(401).send({message:"Χωρίς εξουσιοδότηση!"})
