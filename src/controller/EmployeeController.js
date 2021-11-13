@@ -93,14 +93,13 @@ exports.delete = async (req, res) => {
         console.log(employee.additionalInfo)
     }
 
-    const {_id, additionalInfo} = req.body
     const googleStorage = new Storage({keyFilename: keyFileName});
     try {
         const session = await mongoose.startSession()
         session.startTransaction();
 
-        if (additionalInfo != undefined && additionalInfo.length > 0) {
-            for (let infoId of additionalInfo){
+        if (employee.additionalInfo != undefined && employee.additionalInfo.length > 0) {
+            for (let infoId of employee.additionalInfo){
                 const additionalInfo = await AdditionalInfo.findOne({_id:infoId}).populate('files').exec()
                 let additionalFiles = additionalInfo.files
                 console.log(additionalFiles)
@@ -115,7 +114,7 @@ exports.delete = async (req, res) => {
             }
     
         }
-        await Employee.findOneAndDelete({_id: _id}).exec()
+        await Employee.findOneAndDelete({_id: employeeId}).exec()
 
         await session.commitTransaction();
         session.endSession();
