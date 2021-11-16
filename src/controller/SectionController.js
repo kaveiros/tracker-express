@@ -34,9 +34,9 @@ module.exports.search = async (req, res) => {
 }
 
 module.exports.delete = async (req, res) => {
-    const {_id} = req.body
+    const {sectionId} = req.params
     try {
-        await Section.findByIdAndDelete({_id:_id}).exec()
+        await Section.findByIdAndDelete({_id:sectionId}).exec()
         return res.status(202).send({message: 'Το τμήμα διεγράφηκε'})
     }
     catch (e) {

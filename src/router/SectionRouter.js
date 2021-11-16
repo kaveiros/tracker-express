@@ -4,7 +4,6 @@ module.exports = app => {
     const router = require('express').Router()
     const authjwt = require('../midleware/AuthJWT')
 
-
     router.post('/create', [authjwt.verifyToken], sectionController.create)
 
     router.post('/search/:page*?', [authjwt.verifyToken], sectionController.search)
@@ -13,7 +12,7 @@ module.exports = app => {
 
     router.post('/update', [authjwt.verifyToken], sectionController.update)
 
-    router.post('/delete', [authjwt.verifyToken], sectionController.delete)
+    router.delete('/delete/:sectionId', [authjwt.verifyToken], sectionController.delete)
 
     app.use('/section', router)
 }
