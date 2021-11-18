@@ -13,14 +13,14 @@ verifyToken = (req, res, next) => {
     jwt.verify(req.headers['authorization'].split(' ')[1], configJwt.secret, (err, decoded) =>{
         if(err) {
             console.log(err)
-            return res.status(401).send({message:"Χωρίς εξουσιοδότηση!"})
+            return res.status(401).send({message: "To τόκεν έληξε."})
         }
         let userID = decoded.id
         //console.log("Decoded -> ", decoded)
         User.findById(userID).exec(err=>{
             if (err) {
                 console.log(err)
-                return res.status(401).send({message:"Χωρίς εξουσιοδότηση!"})
+                return res.status(404).send({message:"Σφάλμα στο χρήστη!"})
             }
         })
         next()

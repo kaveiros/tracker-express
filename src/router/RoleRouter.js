@@ -7,7 +7,7 @@ module.exports = app => {
 
     router.post("/create", [authjwt.verifyToken], roleController.create)
 
-    router.post("/delete", [authjwt.verifyToken], roleController.delete)
+    router.delete("/delete", [authjwt.verifyToken], roleController.delete)
 
     router.post('/search/:page*?', [authjwt.verifyToken], roleController.search)
 
