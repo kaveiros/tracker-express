@@ -16,19 +16,19 @@ module.exports.create = async (req, res, next) => {
     const { username, role , email, password } = req.body
     let hashedPassword
     let roleDoc
-    try {
-        hashedPassword = await bcrypt.hash(password, 12)
-        roleDoc = await Role.findOne({ name: role })
+    // try {
+    hashedPassword = await bcrypt.hash(password, 12)
+    // roleDoc = await Role.findOne({ name: role })
 
-    } catch (error) {
-        return next(new HttpError('Failed finding role', 500))
-    }
+    // } catch (error) {
+    //     return next(new HttpError('Failed finding role', 500))
+    // }
 
     const createdUser = new User({
         username: username,
         password: hashedPassword,
         email: email,
-        roles: roleDoc.id
+        role: role
 
     })
     try {
@@ -67,7 +67,7 @@ module.exports.singIn = async (req, res, next) => {
         let password = req.body.password
         let user = await User.findOne({username:username}).exec()
         console.log("User -> ",user)
-        let roles = await user.populate('roles').execPopulate();
+        // let roles = await user.populate('roles').execPopulate();
         let passwordMatch = bcrypt.compareSync(password, user.password)
         console.log("Passwords match -> ", passwordMatch)
         if (passwordMatch === true){
@@ -76,13 +76,14 @@ module.exports.singIn = async (req, res, next) => {
                 userId: user._id,
                 username: user.username,
                 email:user.email,
-                role: user.roles[0].name
+                role: user.role
             }
 
             let userData = {
                 username: user.username,
                 email:user.email,
-                role: user.roles[0].name
+                role: user.role
+                // role: user.roles[0].name
             }
 
             let token = jwt.sign(
@@ -116,43 +117,38 @@ module.exports.singIn = async (req, res, next) => {
 
 }
 
-
-module.exports.setRole = async (req, res) => {
-
-    try {
-
-        const {employeeId, roleId} = req.body
-        console.log(req.body)
-        const user = await User.findOneAndUpdate(
-            { _id: employeeId },
-            { $push: { roles: roleId }},(err, result) =>{
-                if (err) {
-                    LOGGER.error("Σφάλμα στην προσθήκη ρόλου.")
-                    return res.status(500).send({message: "Σφάλμα στην προσθήκη ρόλου."})
-                }
-                else {
-                    return res.status(200).send({message:"Ο ρόλος προστέθηκε επιτυχώς."})
-                }
-            }
-        )
-
-    }
-    catch (exp) {
-        console.log(exp)
-        LOGGER.error("Σφάλμα στην προσθήκη ρόλου.")
-        return res.status(500).send({message: "Σφάλμα στην προσθήκη ρόλου."})
-    }
-
-    //return res.status(200).send({message:"Ο ρόλος προστέθηκε επιτυχώς."})
-
-//push
-    //pull
-}
+// keep for reference purposes
+// module.exports.setRole = async (req, res) => {
+//
+//     try {
+//
+//         const {employeeId, roleId} = req.body
+//         console.log(req.body)
+//         const user = await User.findOneAndUpdate(
+//             { _id: employeeId },
+//             { $push: { roles: roleId }},(err, result) =>{
+//                 if (err) {
+//                     LOGGER.error("Σφάλμα στην προσθήκη ρόλου.")
+//                     return res.status(500).send({message: "Σφάλμα στην προσθήκη ρόλου."})
+//                 }
+//                 else {
+//                     return res.status(200).send({message:"Ο ρόλος προστέθηκε επιτυχώς."})
+//                 }
+//             }
+//         )
+//
+//     }
+//     catch (exp) {
+//         console.log(exp)
+//         LOGGER.error("Σφάλμα στην προσθήκη ρόλου.")
+//         return res.status(500).send({message: "Σφάλμα στην προσθήκη ρόλου."})
+//     }
+// }
 
 module.exports.getAll = async (req, res) => {
 
     try {
-        const users = await User.find().populate('roles')
+        const users = await User.find()
         return  res.status(200).send(users)
     }
     catch (exception) {
@@ -166,7 +162,7 @@ module.exports.search = async(req, res) => {
 
     const perPage = 20
     const { username } =  req.body
-    let page = req.params.page
+    const { page } = req.params
 
     try {
 
@@ -188,5 +184,15 @@ module.exports.search = async(req, res) => {
     } catch (error) {
         res.status(500).send({message: "Σφάλμα στην ανάκτηση χρήστη."})
     }
+}
+
+module.exports.delete = async(req, res) => {
+    const { id } = req.params
+    User.findByIdAndDelete(id, (err)=>{
+        if(err) {
+            return res.status(500).send({message:"Error deleting role."})
+        }
+        return res.status(200).send({message: "Deleted role."})
+    })
 }
 
