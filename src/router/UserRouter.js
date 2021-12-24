@@ -9,7 +9,10 @@ module.exports = app => {
 
     route.post('/signin', userController.singIn)
 
-    route.post("/setRole", [authjwt.verifyToken], userController.setRole)
+    //keep for reference
+    //route.post("/setRole", [authjwt.verifyToken], userController.setRole)
+
+    route.delete("/delete/:id", [authjwt.verifyToken], userController.delete)
 
     route.get("/all",[authjwt.verifyToken], userController.getAll)
 

@@ -4,12 +4,14 @@ module.exports = (mongoose)=>{
         username: String,
         email: String,
         password: String,
-        roles: [
-          {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Role"
-          }
-        ]
+        role:String,
+        //keep for reference
+        // roles: [
+        //   {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: "Role"
+        //   }
+        // ]
     })
 
     return mongoose.model("User", UserSchema)
