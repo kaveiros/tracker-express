@@ -1,7 +1,8 @@
 module.exports = mongoose => {
 
     const section = new mongoose.Schema({
-        section:String
+        section:String,
+
     }, {timestamps:true})
 
     return mongoose.model("Section", section)
