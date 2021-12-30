@@ -69,7 +69,8 @@ module.exports.downloadFile = async (req, res) => {
     }
 }
 
-module.exports.getAll= async (req, res) => {
+//Check if this is still needed
+module.exports.search= async (req, res) => {
 
     try {
         const perPage = 20
@@ -86,6 +87,15 @@ module.exports.getAll= async (req, res) => {
     catch(error) {
         res.status(500).send({message: error})
     }
+}
 
+module.exports.getAll = async (req, res) => {
+    try {
+        const infos = await AdditionalInfo.find()
+        return res.status(200).send(infos)
+    }
+    catch (infoException) {
 
+        return res.status(500).send({message: infoException})
+    }
 }

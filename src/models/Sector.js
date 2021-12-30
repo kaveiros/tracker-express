@@ -5,7 +5,8 @@
 module.exports = (mongoose) => {
 
     let schema = new mongoose.Schema({
-        sector: String
+        sector: String,
+        administation: String
     }, {timestamps:true})
 
     return mongoose.model("Sector", schema)

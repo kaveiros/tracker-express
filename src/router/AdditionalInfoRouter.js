@@ -1,4 +1,6 @@
 const path = require('path')
+const authjwt = require("../midleware/AuthJWT");
+
 
 module.exports = app => {
 
@@ -16,11 +18,11 @@ module.exports = app => {
     })
     let upload = multer({ storage : storage }).array('documents',5)
 
-    router.post('/create', upload, additionalInfoRouter.upload)
+    router.post('/create', [authjwt.verifyToken, upload], additionalInfoRouter.upload)
 
-    router.post('/download-file', upload, additionalInfoRouter.downloadFile)
+    router.post('/download-file', [authjwt.verifyToken, upload], additionalInfoRouter.downloadFile)
 
-    router.get('/all/:page*?', additionalInfoRouter.getAll)
+    router.get('/all/', [authjwt.verifyToken, upload], additionalInfoRouter.getAll)
 
     app.use('/additionalInfo', router)
 }
