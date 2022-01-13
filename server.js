@@ -3,10 +3,15 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser');
 const cors = require('cors')
 const db = require('./src/mongo/dbPool')
-
 const app = express()
-
+const AdministrationController = require('./src/controller/AdministrationController')
 app.disable('x-powered-by')
+const emitterUpdate = require('./src/messaging/emitter')
+emitterUpdate.on('administration-update', async  (args) => {
+    console.log('administration id: ' + args._id);
+    const administrationActive =  await  AdministrationController.find(args._id)
+    console.log(administrationActive)
+});
 
 let corsOptions = {
     origin: [process.env.CORS2, process.env.CORS || "http://localhost:3000"],
@@ -32,6 +37,7 @@ require('./src/router/EmployeeRouter')(app)
 require('./src/router/AdditionalInfoRouter')(app)
 require('./src/router/WarehouseRouter')(app)
 require('./src/router/SectionRouter')(app)
+require('./src/router/AdministrationRouter')(app)
 
 
 const port = process.env.PORT || 4000

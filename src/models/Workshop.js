@@ -1,11 +1,11 @@
 /**
- * Create a Sector Model
- * @param {*} mongoose 
+ * Create a Workshop Model
+ * @param {*} mongoose
  */
 module.exports = (mongoose) => {
 
     let schema = new mongoose.Schema({
-        sector: String,
+        workshop: String,
         administration: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Administration"
@@ -13,8 +13,12 @@ module.exports = (mongoose) => {
         section: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Section"
+        },
+        sector: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Sector"
         }
     }, {timestamps:true})
 
-    return mongoose.model("Sector", schema)
+    return mongoose.model("Workshop", schema)
 }
