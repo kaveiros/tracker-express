@@ -41,7 +41,7 @@ module.exports.delete = async (req, res) => {
 module.exports.getAll = async  (req, res) => {
 
     try {
-        const sectors = await Sector.find()
+        const sectors = await Sector.find().populate('administration').populate('section')
         return res.status(200).send(sectors)
     }
     catch (exp) {
