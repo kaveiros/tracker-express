@@ -5,7 +5,7 @@ module.exports = app => {
 
     router.post('/create', administrationController.create)
 
-    router.put('/update', administrationController.update)
+    router.post('/update', administrationController.update)
 
     router.delete('/delete', authjwt.verifyToken, administrationController.delete)
 
