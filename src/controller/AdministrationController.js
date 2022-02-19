@@ -25,9 +25,10 @@
         const filter = {_id:_id}
         emitterUpdate.emit('administration-update', filter);
 
-        Administration.updateOne(filter, {administration:administration, isActive:isActive},{new: true}).then(
+        Administration.findOneAndUpdate(filter, {administration:administration, isActive:isActive},{new: true}).then(
             data=> {
-                return response.status(201).send({message:"Η διεύθυνση ενημερώθηκε."})
+                console.log(data)
+                return response.status(201).send({message:"Η διεύθυνση ενημερώθηκε.", data : data})
             }
         ).catch(
                     err => {
@@ -43,9 +44,9 @@
 
         Administration.findByIdAndDelete(administrationId, (err)=>{
             if(err) {
-                return response.status(500).send({message:"Σφάλμα στη διαγραφή της διεύθυνσης."})
+                return response.status(500).send({message:"Σφάλμα στην απενεργοποίηση της διεύθυνσης."})
             }
-            return response.status(200).send({message: "Η διευθυνση διαγραφηκε."})
+            return response.status(200).send({message: "Η διευθυνση απενεργοποιήθηκε."})
         })
 
 
