@@ -2,6 +2,16 @@
     const db = require('../mongo/dbPool')
     const Administration = db.Administration
     const emitterUpdate = require('../messaging/emitter')
+    const Redis = require("ioredis");
+    // const redis = require('../messaging/RedisConnector')
+    // const redis = new Redis(
+    //     "redis://127.0.0.1:6379"
+    // );
+    const redis = new Redis(
+        process.env.REDIS_HOST,
+        {password: process.env.REDIS_P}
+    );
+
 
 
     module.exports.create = async (request, response) => {
@@ -23,7 +33,10 @@
     module.exports.update = async (request, response, sendMessage) => {
         const {_id, administration, isActive} = request.body
         const filter = {_id:_id}
-        emitterUpdate.emit('administration-update', filter);
+        // emitterUpdate.emit('administration-update', filter);
+        redis.publish('administration-update', JSON.stringify(filter));
+        redis.publish('administration-update-2', JSON.stringify(filter));
+
 
         Administration.findOneAndUpdate(filter, {administration:administration, isActive:isActive},{new: true}).then(
             data=> {

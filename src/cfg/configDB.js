@@ -1,3 +1,5 @@
+const dotenv = require('dotenv')
+dotenv.config()
 module.exports = {
-    dbUrl:"mongodb+srv://db_user:linuxakias123@exrpressproject.jnr5m.mongodb.net/tracker?retryWrites=true&w=majority"
+    dbUrl:process.env.DB
 }

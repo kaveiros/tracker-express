@@ -18,7 +18,7 @@ module.exports.create = async (req, res) => {
 
 module.exports.getAll = async (req, res) => {
     try {
-        const sections = await Section.find()
+        const sections = await Section.find().populate('administration')
         return res.status(200).send(sections)
     }
     catch (exp) {
